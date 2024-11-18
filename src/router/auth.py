@@ -26,6 +26,9 @@ auth_router = APIRouter()
         },
     },
 )
+
+# TODO: WEB01_UserData02 유저 말투 학습
+# TODO: DB 연동
 def login(dto: LoginDTO):
     try:
         response = instagram.get_access_token(dto)
