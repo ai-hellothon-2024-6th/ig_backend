@@ -30,26 +30,31 @@ def get_access_token(dto: LoginDTO):
 
 
 def get_info(auth: AuthDTO):
-    def get_me(dto: RequestWithFieldsDTO):
-        url = "https://graph.instagram.com/me"
-        response = requests.get(url, params=dto.model_dump())
-        response.raise_for_status()
-        data = response.json()
-        return MeResponseDTO(**data)
-
-    me = get_me(
-        RequestWithFieldsDTO(
+    url = "https://graph.instagram.com/me"
+    response = requests.get(
+        url,
+        params=RequestWithFieldsDTO(
             access_token=auth.access_token,
             fields="username,name,account_type,followers_count",
-        )
+        ).model_dump(),
     )
+    response.raise_for_status()
+    data = response.json()
+    return InfoDTO(**data)
 
-    return InfoDTO(
-        username=me.username,
-        name=me.name,
-        account_type=me.account_type,
-        followers_count=me.followers_count,
+
+def get_profile_info(auth: AuthDTO):
+    url = "https://graph.instagram.com/me"
+    response = requests.get(
+        url,
+        params=RequestWithFieldsDTO(
+            access_token=auth.access_token,
+            fields=",".join(["profile_picture_url", "name", "username"]),
+        ).model_dump(),
     )
+    response.raise_for_status()
+    data = response.json()
+    return ProfileInfoDTO(**data)
 
 
 def get_media_detail(media_id: str, access_token: str):

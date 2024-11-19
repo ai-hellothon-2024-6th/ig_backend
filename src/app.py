@@ -6,7 +6,6 @@ from src.router.auth import auth_router
 from src.router.info import info_router
 from src.router.media import media_router
 
-
 app = FastAPI()
 
 app.include_router(auth_router, prefix="/auth")

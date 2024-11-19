@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Response
 from src.models.auth import LoginDTO, TokenDTO
 from src.api import instagram
-from src.utils import jwt
+from src.utils import jwt, responses
 from requests.exceptions import HTTPError
 
 auth_router = APIRouter()
@@ -12,18 +12,7 @@ auth_router = APIRouter()
     response_model=TokenDTO,
     tags=["auth"],
     responses={
-        400: {
-            "description": "Bad Request",
-            "content": {
-                "application/json": {
-                    "example": {
-                        "error_type": "OAuthException",
-                        "code": 400,
-                        "error_message": "Matching code was not found or was already used",
-                    }
-                }
-            },
-        },
+        400: responses.bad_request_ig,
     },
 )
 
