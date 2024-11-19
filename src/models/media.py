@@ -7,3 +7,4 @@ class MediaDTO(BaseModel):
     like_count: int = None
     comments_count: int = None
     caption: str = None
+    media_type: str = None
