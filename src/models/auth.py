@@ -14,7 +14,7 @@ class ShortAccessTokenRequestDTO(BaseModel):
     redirect_uri: str
     code: str
 
-class AccessTokenResponseDTO(BaseModel):
+class AuthDTO(BaseModel):
     access_token: str
     user_id: int
 
