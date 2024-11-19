@@ -10,7 +10,7 @@ media_router = APIRouter()
 
 
 @media_router.get(
-    "/",
+    "",
     response_model=List[MediaDTO],
     tags=["media"],
     responses={
@@ -33,7 +33,7 @@ def media_list(auth: AuthDTO = Depends(jwt.verify_jwt)):
     },
 )
 def media_detail(
-    media_id: int,
+    media_id: str,
     auth: AuthDTO = Depends(jwt.verify_jwt),
 ):
     try:

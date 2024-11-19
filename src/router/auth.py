@@ -15,9 +15,6 @@ auth_router = APIRouter()
         400: responses.bad_request_ig,
     },
 )
-
-# TODO: WEB01_UserData02 유저 말투 학습
-# TODO: DB 연동
 def login(dto: LoginDTO):
     try:
         response = instagram.get_access_token(dto)
@@ -29,3 +26,7 @@ def login(dto: LoginDTO):
         return {"token": jwt_token}
     except HTTPError as e:
         return Response(content=e.response.text, status_code=e.response.status_code)
+
+
+# TODO: WEB01_UserData02 유저 말투 학습
+# TODO: DB 연동

@@ -24,7 +24,7 @@ def profile_info(auth: AuthDTO = Depends(jwt.verify_jwt)):
 
 
 @info_router.get(
-    "/",
+    "",
     response_model=InfoDTO,
     tags=["info"],
     responses={

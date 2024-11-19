@@ -1,97 +1,83 @@
+import requests
+
 from src.models.common import *
 from src.models.auth import *
 from src.models.info import *
 from src.models.media import *
-import requests
+from src.utils.tools import fields
+
+API = "https://api.instagram.com"
+GRAPH = "https://graph.instagram.com"
+
+
+def get_api(base_url: str, path: str, dto: BaseModel) -> dict:
+    response = requests.get(f"{base_url}{path}", params=dto.model_dump())
+    response.raise_for_status()
+    return response.json()
+
+
+def post_api(base_url: str, path: str, dto: BaseModel) -> dict:
+    response = requests.post(f"{base_url}{path}", data=dto.model_dump())
+    response.raise_for_status()
+    return response.json()
 
 
 def get_access_token(dto: LoginDTO):
-    def get_short_access_token(dto: ShortAccessTokenRequestDTO):
-        url = "https://api.instagram.com/oauth/access_token"
-        response = requests.post(url, data=dto.model_dump())
-        response.raise_for_status()
-        data = AuthDTO(**response.json())
-        return data
-
-    def get_long_lived_access_token(dto: LongLivedAccessTokenRequestDTO):
-        url = "https://graph.instagram.com/access_token"
-        response = requests.get(url, params=dto.model_dump())
-        response.raise_for_status()
-        data = LongLivedAccessTokenResponseDTO(**response.json())
-        return data
-
-    short_data = get_short_access_token(
-        ShortAccessTokenRequestDTO(code=dto.code, redirect_uri=dto.redirect_uri)
-    )
-    long_data = get_long_lived_access_token(
-        LongLivedAccessTokenRequestDTO(access_token=short_data.access_token)
+    short_dto = ShortAccessTokenRequestDTO(code=dto.code, redirect_uri=dto.redirect_uri)
+    short_response = post_api(API, "/oauth/access_token", short_dto)
+    short_response["user_id"] = str(short_response["user_id"])
+    short_data = AuthDTO(**short_response)
+    long_dto = LongLivedAccessTokenRequestDTO(access_token=short_data.access_token)
+    long_data = LongLivedAccessTokenResponseDTO(
+        **get_api(GRAPH, "/access_token", long_dto)
     )
     return AuthDTO(access_token=long_data.access_token, user_id=short_data.user_id)
 
 
 def get_info(auth: AuthDTO):
-    url = "https://graph.instagram.com/me"
-    response = requests.get(
-        url,
-        params=RequestWithFieldsDTO(
-            access_token=auth.access_token,
-            fields="username,name,account_type,followers_count",
-        ).model_dump(),
+    fieldsDTO = RequestWithFieldsDTO(
+        access_token=auth.access_token,
+        fields=fields("username", "name", "account_type", "followers_count"),
     )
-    response.raise_for_status()
-    data = response.json()
-    return InfoDTO(**data)
+    return InfoDTO(**get_api(GRAPH, "/me", fieldsDTO))
 
 
 def get_profile_info(auth: AuthDTO):
-    url = "https://graph.instagram.com/me"
-    response = requests.get(
-        url,
-        params=RequestWithFieldsDTO(
-            access_token=auth.access_token,
-            fields=",".join(["profile_picture_url", "name", "username"]),
-        ).model_dump(),
+    fieldsDTO = RequestWithFieldsDTO(
+        access_token=auth.access_token,
+        fields=fields("profile_picture_url", "name", "username"),
     )
-    response.raise_for_status()
-    data = response.json()
-    return ProfileInfoDTO(**data)
+    return ProfileInfoDTO(**get_api(GRAPH, "/me", fieldsDTO))
 
 
 def get_media_detail(media_id: str, access_token: str):
-    url = f"https://graph.instagram.com/{media_id}"
-    response = requests.get(
-        url,
-        params=RequestWithFieldsDTO(
-            access_token=access_token,
-            fields=",".join(
-                [
-                    "caption",
-                    "media_url",
-                    "thumbnail_url",
-                    "like_count",
-                    "comments_count",
-                    "media_type",
-                    "timestamp",
-                ]
-            ),
-        ).model_dump(),
+    fieldsDTO = RequestWithFieldsDTO(
+        access_token=access_token,
+        fields=fields(
+            "caption",
+            "media_url",
+            "thumbnail_url",
+            "like_count",
+            "comments_count",
+            "media_type",
+            "timestamp",
+        ),
     )
-    response.raise_for_status()
-    data: dict = response.json()
+    data = get_api(GRAPH, f"/{media_id}", fieldsDTO)
     return MediaDTO(
         id=media_id,
-        thumbnail_url=data.get("thumbnail_url") or data.get("media_url"),
-        like_count=data.get("like_count"),
-        comments_count=data.get("comments_count"),
         caption=data.get("caption") or "",
-        media_type=data.get("media_type"),
-        timestamp=data.get("timestamp"),
+        media_url=data["media_url"],
+        thumbnail_url=data.get("thumbnail_url") or data.get("media_url"),
+        like_count=data["like_count"],
+        comments_count=data["comments_count"],
+        media_type=data["media_type"],
+        timestamp=data["timestamp"],
     )
 
 
 def get_media_list(auth: AuthDTO):
-    url = "https://graph.instagram.com/me/media"
-    response = requests.get(url, params={"access_token": auth.access_token})
-    response.raise_for_status()
-    data = response.json()
-    return [get_media_detail(el["id"], auth.access_token) for el in data["data"]]
+    return [
+        get_media_detail(el["id"], auth.access_token)
+        for el in get_api(GRAPH, "/me/media", auth)["data"]
+    ]
