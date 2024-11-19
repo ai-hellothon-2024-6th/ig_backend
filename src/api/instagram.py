@@ -71,6 +71,7 @@ def get_media_detail(media_id: str, access_token: str):
                     "like_count",
                     "comments_count",
                     "media_type",
+                    "timestamp",
                 ]
             ),
         ).model_dump(),
@@ -84,6 +85,7 @@ def get_media_detail(media_id: str, access_token: str):
         comments_count=data.get("comments_count"),
         caption=data.get("caption") or "",
         media_type=data.get("media_type"),
+        timestamp=data.get("timestamp"),
     )
 
 

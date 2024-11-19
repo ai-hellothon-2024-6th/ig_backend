@@ -8,3 +8,4 @@ class MediaDTO(BaseModel):
     comments_count: int = None
     caption: str = None
     media_type: str = None
+    timestamp: str = None
