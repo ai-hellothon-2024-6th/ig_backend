@@ -17,9 +17,9 @@ auth_router = APIRouter()
             "content": {
                 "application/json": {
                     "example": {
-                        "error_type": "str",
-                        "code": "int",
-                        "error_message": "str",
+                        "error_type": "OAuthException",
+                        "code": 400,
+                        "error_message": "Matching code was not found or was already used",
                     }
                 }
             },
