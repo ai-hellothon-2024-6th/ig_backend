@@ -13,7 +13,7 @@ def post_ml_api(path: str, dto: BaseModel) -> dict:
         "Content-Type": "application/json",
         "Authorization": f"Bearer {settings.ALICE_ML_API_KEY}",
     }
-    response = post_api(f"{API}{path}", dto.model_dump(), headers=headers)
+    response = post_api(f"{API}{path}", json=dto.model_dump(), headers=headers)
     return response
 
 

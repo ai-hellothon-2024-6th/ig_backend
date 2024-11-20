@@ -7,7 +7,9 @@ def get_api(url: str, params: dict) -> dict:
     return response.json()
 
 
-def post_api(url: str, payload: dict, headers: dict = None) -> dict:
-    response = requests.post(url, json=payload, headers=headers)
+def post_api(
+    url: str, json: dict = None, data: dict = None, headers: dict = None
+) -> dict:
+    response = requests.post(url, data=data, json=json, headers=headers)
     response.raise_for_status()
     return response.json()
