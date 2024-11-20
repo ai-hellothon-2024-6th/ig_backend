@@ -6,6 +6,7 @@ class Settings(BaseSettings):
     IG_CLIENT_SECRET: str
     IG_GRANT_TYPE: str = "authorization_code"
     JWT_SECRET_KEY: str
+    ALICE_ML_API_KEY: str
 
     class Config:
         env_file = ".env"

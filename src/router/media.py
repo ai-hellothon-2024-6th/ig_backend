@@ -1,15 +1,15 @@
 from fastapi import APIRouter, Response, Depends
 from src.models.media import MediaDTO
 from src.models.auth import AuthDTO
-from src.api import instagram
+from src.api.instagram import media as media_api
 from src.utils import jwt, responses
 from requests.exceptions import HTTPError
 from typing import List
 
-media_router = APIRouter()
+router = APIRouter()
 
 
-@media_router.get(
+@router.get(
     "",
     response_model=List[MediaDTO],
     tags=["media"],
@@ -19,12 +19,15 @@ media_router = APIRouter()
 )
 def media_list(auth: AuthDTO = Depends(jwt.verify_jwt)):
     try:
-        return instagram.get_media_list(auth)
+        return media_api.get_media_list(auth)
     except HTTPError as e:
-        return Response(content=e.response.text, status_code=e.response.status_code)
+        return Response(
+            content=e.response.text,
+            status_code=e.response.status_code,
+        )
 
 
-@media_router.get(
+@router.get(
     "/{media_id}",
     response_model=MediaDTO,
     tags=["media"],
@@ -37,6 +40,9 @@ def media_detail(
     auth: AuthDTO = Depends(jwt.verify_jwt),
 ):
     try:
-        return instagram.get_media_detail(media_id, auth.access_token)
+        return media_api.get_media_detail(media_id, auth.access_token)
     except HTTPError as e:
-        return Response(content=e.response.text, status_code=e.response.status_code)
+        return Response(
+            content=e.response.text,
+            status_code=e.response.status_code,
+        )

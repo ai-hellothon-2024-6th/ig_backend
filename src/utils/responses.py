@@ -15,3 +15,14 @@ bad_request_ig = {
         }
     },
 }
+
+logoutSuccess = {
+    "description": "Logout Success",
+    "content": {
+        "application/json": {
+            "example": {
+                "message": "logout success",
+            }
+        }
+    },
+}

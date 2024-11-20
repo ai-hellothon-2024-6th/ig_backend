@@ -9,7 +9,7 @@ class LoginDTO(BaseModel):
     # 배포 시에는 아예 삭제하고 고정값으로 설정
 
 
-class ShortAccessTokenRequestDTO(BaseModel):
+class ShortTokenRequestDTO(BaseModel):
     client_id: str = settings.IG_CLIENT_ID
     client_secret: str = settings.IG_CLIENT_SECRET
     grant_type: str = settings.IG_GRANT_TYPE
@@ -22,13 +22,13 @@ class AuthDTO(BaseModel):
     user_id: str
 
 
-class LongLivedAccessTokenRequestDTO(BaseModel):
+class LongTokenRequestDTO(BaseModel):
     grant_type: str = "ig_exchange_token"
     client_secret: str = settings.IG_CLIENT_SECRET
     access_token: str
 
 
-class LongLivedAccessTokenResponseDTO(BaseModel):
+class LongTokenResponseDTO(BaseModel):
     access_token: str
     token_type: str
     expires_in: int

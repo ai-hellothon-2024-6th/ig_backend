@@ -2,15 +2,14 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from src.router.auth import auth_router
-from src.router.info import info_router
-from src.router.media import media_router
+from src.router import *
 
 app = FastAPI()
 
 app.include_router(auth_router, prefix="/auth")
 app.include_router(info_router, prefix="/info")
 app.include_router(media_router, prefix="/media")
+app.include_router(comment_router, prefix="/comment")
 
 # CORS 설정
 app.add_middleware(

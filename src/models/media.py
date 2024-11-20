@@ -3,9 +3,9 @@ from pydantic import BaseModel
 
 class MediaDTO(BaseModel):
     id: str
-    thumbnail_url: str = None
-    like_count: int = None
-    comments_count: int = None
-    caption: str = None
-    media_type: str = None
-    timestamp: str = None
+    thumbnail_url: str
+    like_count: int
+    comments_count: int
+    caption: str
+    media_type: str
+    timestamp: str
