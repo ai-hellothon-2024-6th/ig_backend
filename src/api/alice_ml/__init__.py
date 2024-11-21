@@ -1,8 +1,9 @@
+from typing import List
+import uuid
 from pydantic import BaseModel
 from src.settings import settings
 from src.api import post_api
 from src.models.alice_ml import *
-from typing import List
 
 API = "https://api-cloud-function.elice.io"
 
@@ -31,3 +32,14 @@ def get_filterd_text(text: str) -> str:
         FilteredTextRequestDTO(text=text, tone="honorific"),
     )
     return FilteredTextResponseDTO(**response).output
+
+
+def get_generative_text(messages: List[dict]) -> str:
+    response = post_ml_api(
+        "/5a327f26-cc55-45c5-92b7-e909c2df0ba4/v1/chat/completions",
+        GenerativeTextRequestDTO(sess_id=str(uuid.uuid4()), messages=messages),
+    )
+    print(response)
+    return (
+        GenerativeTextResponseDTO(**response).choices[0].get("message").get("content")
+    )

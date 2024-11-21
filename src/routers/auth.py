@@ -4,6 +4,8 @@ from src.api.instagram import auth as auth_api
 from src.utils import jwt, responses
 from requests.exceptions import HTTPError
 
+# TODO : API와 DB 접점을 Service로 분리 (auth)
+
 router = APIRouter()
 
 

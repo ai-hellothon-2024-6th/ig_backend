@@ -6,6 +6,8 @@ from src.utils import jwt, responses
 from requests.exceptions import HTTPError
 from typing import List
 
+# TODO : API와 DB 접점을 Service로 분리 (media)
+
 router = APIRouter()
 
 

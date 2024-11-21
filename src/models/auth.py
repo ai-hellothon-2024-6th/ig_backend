@@ -10,7 +10,7 @@ class LoginDTO(BaseModel):
 
 
 class ShortTokenRequestDTO(BaseModel):
-    client_id: int = settings.IG_CLIENT_ID
+    client_id: str = settings.IG_CLIENT_ID
     client_secret: str = settings.IG_CLIENT_SECRET
     grant_type: str = settings.IG_GRANT_TYPE
     redirect_uri: str
