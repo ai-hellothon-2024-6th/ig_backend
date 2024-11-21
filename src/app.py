@@ -9,6 +9,8 @@ app = FastAPI()
 app.include_router(auth_router, prefix="/auth")
 app.include_router(info_router, prefix="/info")
 app.include_router(media_router, prefix="/media")
+app.include_router(emotional_router, prefix="/comment/emotional")
+app.include_router(motivational_router, prefix="/comment/motivational")
 app.include_router(comment_router, prefix="/comment")
 
 # CORS 설정

@@ -35,6 +35,7 @@ def get_filterd_text(text: str) -> str:
 
 
 def get_generative_text(messages: List[dict]) -> str:
+    print(messages)
     response = post_ml_api(
         "/5a327f26-cc55-45c5-92b7-e909c2df0ba4/v1/chat/completions",
         GenerativeTextRequestDTO(sess_id=str(uuid.uuid4()), messages=messages),

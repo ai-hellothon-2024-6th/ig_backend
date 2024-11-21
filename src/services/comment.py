@@ -4,6 +4,56 @@ from src.models.comment import *
 from src.models.alice_ml import ScoreResponseDTO
 from src.api.instagram import comment as comment_api
 from src.api import alice_ml as ml_api
+from faker import Faker  # TODO : 테스트용 코드, 추후 삭제
+import datetime  # TODO : 테스트용 코드, 추후 삭제
+import random  # TODO : 테스트용 코드, 추후 삭제
+
+fake = Faker("en_US")
+
+
+def system_message(text: str):
+    return {
+        "role": "system",
+        "content": text,
+    }
+
+
+def user_message(text: str):
+    return {
+        "role": "user",
+        "content": text,
+    }
+
+
+def get_comments_by_category(category: str, auth: AuthDTO) -> List[PositiveCommentDTO]:
+    # TODO : DB 호출로 전환
+    comments = []
+    prompt = ""
+    if category == PositiveCommentCategory.EMOTIONAL:
+        prompt += "Interest, Search 형태로 나오는 댓글, 즉 나의 콘텐츠나 상품에 대해 질문하는 사람들의 댓글을 줄글로 자연스럽게 작성합니다."
+    if category == PositiveCommentCategory.MOTIVATIONAL:
+        prompt += "Action Share 형태로 나오는 댓글 즉 사용 경험 설명, 제품 설명, 콘텐츠를 지속적으로 소비한다고 밝힌 사람에 대한 댓글을 줄글로 자연스럽게 작성합니다."
+    for i in range(5):
+        comments.append(
+            PositiveCommentDTO(
+                id=f"{random.randint(1, 1000000)}",
+                text=ml_api.get_generative_text(
+                    [
+                        system_message(
+                            "주어진 내용에 맞춰 임의의 길이의 인스타 스타일의 댓글을 생성합니다."
+                        ),
+                        user_message(prompt),
+                        system_message("no yapping, 답변만 반환해주세요."),
+                    ]
+                ),
+                timestamp=fake.date_time_this_month(
+                    before_now=True, tzinfo=datetime.timezone.utc
+                ).isoformat(),
+                username=fake.user_name().lower(),
+                category=category,
+            ),
+        )
+    return comments
 
 
 def recommend_reply(dto: CommentDTO, auth: AuthDTO):
@@ -17,12 +67,9 @@ def recommend_reply(dto: CommentDTO, auth: AuthDTO):
     text += f"{dto.text}\n"
     response = ml_api.get_generative_text(
         [
-            {
-                "role": "system",
-                "content": "주어진 내용에 맞춰 인스타 답변 리플을 생성합니다.",
-            },
-            {"role": "user", "content": text},
-            {"role": "system", "content": "no yapping, 답변만 반환해주세요."},
+            system_message("주어진 내용에 맞춰 인스타 답변 리플을 생성합니다."),
+            user_message(text),
+            system_message("no yapping, 답변만 반환해주세요."),
         ]
     )
     return ReplyRecommendationDTO(reply=response)
