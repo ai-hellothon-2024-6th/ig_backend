@@ -48,7 +48,7 @@ def get_comments_by_category(category: str, auth: AuthDTO) -> List[PositiveComme
                 ),
                 timestamp=fake.date_time_this_month(
                     before_now=True, tzinfo=datetime.timezone.utc
-                ).isoformat(),
+                ).isoformat(timespec="seconds"),
                 username=fake.user_name().lower(),
                 category=category,
             ),
