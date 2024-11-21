@@ -11,7 +11,7 @@ router = APIRouter()
 
 @router.get(
     "",
-    # response_model=ReplyRecommendationDTO,
+    response_model=List[PositiveCommentDTO],
     tags=["motivational"],
     responses={
         403: responses.forbidden,
