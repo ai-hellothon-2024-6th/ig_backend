@@ -59,6 +59,7 @@ def get_comments_by_category(category: str, auth: AuthDTO) -> List[PositiveComme
 
 
 def recommend_reply(dto: CommentDTO, auth: AuthDTO):
+
     # TODO : auth를 통한 유저 확인 후 말투 RAG
     text = ""
     text += (
