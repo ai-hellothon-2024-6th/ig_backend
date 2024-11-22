@@ -17,9 +17,11 @@ router = APIRouter()
         403: responses.forbidden,
     },
 )
-def recommend_reply(dto: CommentDTO, auth: AuthDTO = Depends(jwt.verify_jwt)):
+def recommend_reply(
+    limit: int, dto: CommentDTO, auth: AuthDTO = Depends(jwt.verify_jwt)
+):
     try:
-        return service.recommend_reply(dto, auth)
+        return [service.recommend_reply(dto, auth) for i in range(limit)]
 
     except HTTPError as e:
         return Response(content=e.response.text, status_code=e.response.status_code)
