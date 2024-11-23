@@ -2,6 +2,7 @@ from fastapi import APIRouter, Response, Depends
 from src.models.auth import AuthDTO
 from src.models.comment import *
 from src.services import comment as comment_service
+from src.services.comment import loyalty as loyalty_service
 from src.utils import jwt, responses
 from requests.exceptions import HTTPError
 from typing import List
@@ -19,8 +20,8 @@ router = APIRouter()
 )
 def motivational_comments(auth: AuthDTO = Depends(jwt.verify_jwt)):
     try:
-        return comment_service.get_comments_by_category(
-            PositiveCommentCategory.MOTIVATIONAL,
+        return loyalty_service.get_comments_by_category(
+            PositiveCommentCategory.EMOTIONAL,
             auth,
         )
     except HTTPError as e:
@@ -37,7 +38,7 @@ def motivational_comments(auth: AuthDTO = Depends(jwt.verify_jwt)):
 )
 def motivational_comments_summary(auth: AuthDTO = Depends(jwt.verify_jwt)):
     try:
-        return comment_service.get_summary_by_category(
+        return loyalty_service.get_summary_by_category(
             PositiveCommentCategory.MOTIVATIONAL,
             auth,
         )
@@ -60,7 +61,7 @@ def motivational_comments_insights(
 ):
     try:
         return [
-            comment_service.get_insights_by_category(
+            loyalty_service.get_insights_by_category(
                 PositiveCommentCategory.MOTIVATIONAL,
                 auth,
             )

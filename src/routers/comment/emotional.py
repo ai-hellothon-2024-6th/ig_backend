@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Response, Depends
 from src.models.auth import AuthDTO
 from src.models.comment import *
-from src.services import comment as service
+from src.services import comment as comment_service
+from src.services.comment import loyalty as loyalty_service
 from src.utils import jwt, responses
 from requests.exceptions import HTTPError
 from typing import List
@@ -19,7 +20,7 @@ router = APIRouter()
 )
 def emotional_comments(auth: AuthDTO = Depends(jwt.verify_jwt)):
     try:
-        return service.get_comments_by_category(
+        return loyalty_service.get_comments_by_category(
             PositiveCommentCategory.EMOTIONAL,
             auth,
         )
@@ -37,7 +38,7 @@ def emotional_comments(auth: AuthDTO = Depends(jwt.verify_jwt)):
 )
 def emotional_comments_summary(auth: AuthDTO = Depends(jwt.verify_jwt)):
     try:
-        return service.get_summary_by_category(
+        return loyalty_service.get_summary_by_category(
             PositiveCommentCategory.EMOTIONAL,
             auth,
         )
@@ -59,7 +60,7 @@ def emotional_comments_insights(
 ):
     try:
         return [
-            service.get_insights_by_category(
+            loyalty_service.get_insights_by_category(
                 PositiveCommentCategory.EMOTIONAL,
                 auth,
             )

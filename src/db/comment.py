@@ -28,6 +28,18 @@ class RecommendComment(SQLModel, table=True):
 SQLModel.metadata.create_all(engine)
 
 
+def update_recommend_comment(recommend_comment: RecommendComment):
+    with Session(engine) as session:
+        statement = select(RecommendComment).where(
+            RecommendComment.id == recommend_comment.id
+        )
+        existing_comment = session.exec(statement).one_or_none()
+        if existing_comment:
+            existing_comment.reply = recommend_comment.reply
+            session.add(existing_comment)
+            session.commit()
+
+
 def save_recommend_comment(recommend_comment: RecommendComment):
     with Session(engine) as session:
         session.add(recommend_comment)
@@ -35,7 +47,7 @@ def save_recommend_comment(recommend_comment: RecommendComment):
 
 
 def find_recommend_comment(ig_id: str, comment_id: str):
-    print("find")
+    # print("find")
     with Session(engine) as session:
         statement = select(RecommendComment).where(
             and_(
@@ -65,6 +77,24 @@ def find_user_comments_by_toxicity(media_id: str, toxicity: bool):
             and_(
                 UserComment.media_id == media_id,
                 UserComment.toxicity == toxicity,
+            )
+        )
+        return list(session.exec(statement).all())
+
+
+def get_comments_by_category(category: str, ig_id: str):
+    category_code = 0
+    if category == "neutral":
+        category_code = 1
+    elif category == "emotional":
+        category_code = 2
+    elif category == "motivational":
+        category_code = 3
+    with Session(engine) as session:
+        statement = select(UserComment).where(
+            and_(
+                UserComment.ig_id == ig_id,
+                UserComment.category == category_code,
             )
         )
         return list(session.exec(statement).all())

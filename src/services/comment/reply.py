@@ -43,6 +43,12 @@ def reply_comment(comment_id: str, reply: str, access_token: str):
     )
 
 
-def update_recommend_reply(dto: CommentDTO, auth: AuthDTO):
-    # TODO : 아직 DB가 없어요
-    pass
+def update_recommend_reply(dto: RecommendComment, auth: AuthDTO):
+    comment_db.update_recommend_comment(
+        RecommendComment(
+            id=dto.id,
+            reply=dto.reply,
+            ig_id=auth.user_id,
+            comment_id=dto.comment_id,
+        )
+    )

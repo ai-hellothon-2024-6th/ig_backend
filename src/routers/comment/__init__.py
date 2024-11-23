@@ -1,4 +1,3 @@
-from typing import List
 from fastapi import APIRouter, Response, Depends
 from requests.exceptions import HTTPError
 from src.models.auth import AuthDTO
@@ -6,13 +5,14 @@ from src.models.comment import *
 from src.services import comment as comment_service
 from src.services.comment import reply as reply_service
 from src.utils import jwt, responses
+from src.db.comment import RecommendComment
 
 router = APIRouter()
 
 
 @router.post(
     "/reply/recommend",
-    response_model=List[ReplyRecommendationDTO],
+    response_model=list[RecommendComment],
     tags=["comment"],
     responses={
         403: responses.forbidden,
@@ -26,13 +26,17 @@ def recommend_reply(
         print(saved_recommend_reply)
         if len(saved_recommend_reply) > limit:
             return [
-                ReplyRecommendationDTO(id=f"{r.id}", reply=r.reply)
+                RecommendComment(
+                    id=r.id, reply=r.reply, ig_id=r.ig_id, comment_id=r.comment_id
+                )
                 for r in saved_recommend_reply[:limit]
             ]
         for _ in range(limit):
             reply_service.recommend_reply(dto, auth)
         return [
-            ReplyRecommendationDTO(id=f"{r.id}", reply=r.reply)
+            RecommendComment(
+                id=f"{r.id}", reply=r.reply, ig_id=r.ig_id, comment_id=r.comment_id
+            )
             for r in comment_service.get_recommend_reply(dto, auth)
         ]
 
@@ -50,11 +54,11 @@ def recommend_reply(
     },
 )
 def update_recommend_reply(
-    dto: ReplyRecommendationDTO,
+    dto: RecommendComment,
     auth: AuthDTO = Depends(jwt.verify_jwt),
 ):
     try:
-        comment_service.update_recommend_reply(dto, auth)
+        reply_service.update_recommend_reply(dto, auth)
         return Response(status_code=204)
 
     except HTTPError as e:
@@ -72,7 +76,7 @@ def update_recommend_reply(
 )
 def reply_comment(
     comment_id: str,
-    dto: ReplyRecommendationDTO,
+    dto: RecommendComment,
     auth: AuthDTO = Depends(jwt.verify_jwt),
 ):
     try:
@@ -88,7 +92,7 @@ def reply_comment(
 
 @router.get(
     "/{media_id}/positive",
-    response_model=List[CommentDTO],
+    response_model=list[CommentDTO],
     tags=["comment"],
     responses={
         403: responses.forbidden,
@@ -108,7 +112,7 @@ def positive_comments(media_id: str, auth: AuthDTO = Depends(jwt.verify_jwt)):
 
 @router.get(
     "/{media_id}/negative",
-    response_model=List[CommentDTO],
+    response_model=list[CommentDTO],
     tags=["comment"],
     responses={
         403: responses.forbidden,

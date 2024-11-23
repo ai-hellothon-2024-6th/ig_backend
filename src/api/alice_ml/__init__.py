@@ -1,4 +1,3 @@
-from typing import List
 import uuid
 from pydantic import BaseModel
 from src.settings import settings
@@ -18,7 +17,7 @@ def post_ml_api(path: str, dto: BaseModel) -> dict:
     return response
 
 
-def get_scores(text: List[str]) -> List[ScoreResponseDTO]:
+def get_scores(text: list[str]) -> list[ScoreResponseDTO]:
     response = post_ml_api(
         "/cf3b3742-4bf5-433b-9042-bc8c563c25cc/predict",
         ScoreRequestDTO(text=text),
@@ -34,7 +33,7 @@ def get_filterd_text(text: str) -> str:
     return FilteredTextResponseDTO(**response).output
 
 
-def get_generative_text(messages: List[dict]) -> str:
+def get_generative_text(messages: list[dict]) -> str:
     # print("get_generative_text")
     response = post_ml_api(
         "/5a327f26-cc55-45c5-92b7-e909c2df0ba4/v1/chat/completions",
