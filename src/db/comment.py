@@ -42,8 +42,8 @@ def update_recommend_comment(recommend_comment: RecommendComment):
 
 def save_recommend_comment(recommend_comment: RecommendComment):
     with Session(engine) as session:
-        # session.add(recommend_comment)
-        session.merge(recommend_comment)
+        session.add(recommend_comment)
+        # session.merge(recommend_comment)
         session.commit()
 
 
