@@ -1,6 +1,5 @@
 from src.db import engine, SQLModel, Session, Field, select, and_
 from src.utils import tools
-import datetime
 
 
 class AuthTokens(SQLModel, table=True):
@@ -9,6 +8,17 @@ class AuthTokens(SQLModel, table=True):
     ig_id: str = Field(default=None, primary_key=True)
     token: str
     valid_until: str
+
+
+def delete_auth_token(ig_id: str):
+    with Session(engine) as session:
+        auth_token = session.exec(
+            select(AuthTokens).where(AuthTokens.ig_id == ig_id)
+        ).first()
+
+        if auth_token:
+            session.delete(auth_token)  # 삭제 수행
+            session.commit()
 
 
 def save_auth_token(ig_id: str, token: str, valid_until: str):

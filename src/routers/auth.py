@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Response, Depends
 from src.models.auth import LoginDTO, TokenDTO, AuthDTO
-from src.services.auth import get_auth_dto
+from src.services import auth as auth_service
 from src.utils import jwt, responses
 from requests.exceptions import HTTPError
 
@@ -19,7 +19,7 @@ router = APIRouter()
 )
 def login(dto: LoginDTO):
     try:
-        response = get_auth_dto(dto)
+        response = auth_service.get_auth_dto(dto)
         jwt_token = jwt.create_jwt_token(
             {"user_id": response.user_id},
             dto.expires_seconds,
@@ -42,7 +42,7 @@ def login(dto: LoginDTO):
 )
 def logout(auth: AuthDTO = Depends(jwt.verify_jwt)):
     try:
-        # TODO : 저장된 access_token 삭제
+        auth_service.delete_auth_token(auth.user_id)
         return {"message": "logout success"}
     except HTTPError as e:
         return Response(
