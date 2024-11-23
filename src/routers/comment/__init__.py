@@ -19,11 +19,14 @@ router = APIRouter()
     },
 )
 def recommend_reply(
-    dto: CommentDTO, limit: int = 3, auth: AuthDTO = Depends(jwt.verify_jwt)
+    dto: CommentDTO,
+    refresh: bool,
+    limit: int = 3,
+    auth: AuthDTO = Depends(jwt.verify_jwt),
 ):
     try:
         saved_recommend_reply = comment_service.get_recommend_reply(dto, auth)
-        if len(saved_recommend_reply) > limit:
+        if not (refresh) and len(saved_recommend_reply) > limit:
             return [
                 RecommendComment(
                     id=r.id, reply=r.reply, ig_id=r.ig_id, comment_id=r.comment_id
