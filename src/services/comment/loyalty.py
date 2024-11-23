@@ -35,7 +35,7 @@ def get_summary_by_category(category: str, auth: AuthDTO) -> CommentSummaryDTO:
         ]
     )
     return CommentSummaryDTO(
-        text=summary.output,
+        text=summary,
         timestamp=dt_format(datetime.datetime.now()),
     )
 
