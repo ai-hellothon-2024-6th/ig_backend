@@ -173,4 +173,8 @@ def reply_comment(comment_id: str, reply: str, access_token: str):
         reply,
         access_token,
     )
-    print("2222")
+
+
+def update_recommend_reply(dto: CommentDTO, auth: AuthDTO):
+    # TODO : 아직 DB가 없어요
+    pass
