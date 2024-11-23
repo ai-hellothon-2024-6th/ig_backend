@@ -7,7 +7,7 @@ class UserMedia(SQLModel, table=True):
 
     id: str = Field(default=None, primary_key=True)
     ig_id: str
-    caption: str
+    caption: str = Field(sa_column_kwargs={"length": 2200})
 
 
 def save_user_media(user_media: list[MediaDTO], user_id: str):
