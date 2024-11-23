@@ -23,6 +23,7 @@ class CommentDTO(Comment):
     user: bool  # True: app user, False: other user
     toxicity: bool = None  # True: 부정적 댓글, False: 긍정적 댓글
     filtered: str = ""  # 부정적 댓글에만 포함, 긍정적 댓글은 빈 문자열
+    like_count: int
 
 
 class ReplyRecommendationDTO(BaseModel):
