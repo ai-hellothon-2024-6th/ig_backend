@@ -25,4 +25,5 @@ def get_comment_detail(comment_id: str, access_token: str):
     response = get_graph_api(f"/{comment_id}", fieldsDTO)
     response["user"] = response.get("user") is not None
     response["username"] = response.get("from", {}).get("username")
+    response["text"] = response.get("text") or ""
     return CommentDTO(**response)
