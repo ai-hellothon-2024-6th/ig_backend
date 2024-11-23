@@ -67,4 +67,7 @@ def emotional_comments_insights(
         ]
 
     except HTTPError as e:
-        return Response(content=e.response.text, status_code=e.response.status_code)
+        return Response(
+            content=e.response.text,
+            status_code=e.response.status_code,
+        )

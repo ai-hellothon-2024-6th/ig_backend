@@ -37,6 +37,7 @@ def get_comments_by_category(category: str, auth: AuthDTO) -> List[PositiveComme
     for i in range(5):
         comments.append(
             PositiveCommentDTO(
+                # TODO : id는 DB에서 자동 생성되도록 수정
                 id=f"{random.randint(1, 1000000)}",
                 text=ml_api.get_generative_text(
                     [
@@ -75,7 +76,11 @@ def recommend_reply(dto: CommentDTO, auth: AuthDTO):
             system_message("no yapping, 답변만 반환해주세요."),
         ]
     )
-    return ReplyRecommendationDTO(reply=response)
+    return ReplyRecommendationDTO(
+        # TODO : id는 DB에서 자동 생성되도록 수정
+        id=f"{random.randint(1, 1000000)}",
+        reply=response,
+    )
 
 
 def filter_my_comments(comments: List[CommentDTO]):

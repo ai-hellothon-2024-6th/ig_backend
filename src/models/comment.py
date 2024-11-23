@@ -27,6 +27,7 @@ class CommentDTO(Comment):
 
 
 class ReplyRecommendationDTO(BaseModel):
+    id: str
     reply: str
 
 
