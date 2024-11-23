@@ -68,7 +68,7 @@ def get_insights_by_category(category: str, auth: AuthDTO) -> CommentInsightDTO:
         ]
     )
     return CommentInsightDTO(
-        text=insights.output,
+        text=insights,
         timestamp=dt_format(datetime.datetime.now()),
     )
 
