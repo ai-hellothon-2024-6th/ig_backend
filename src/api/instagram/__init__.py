@@ -12,3 +12,7 @@ def get_graph_api(path: str, dto: BaseModel) -> dict:
 
 def post_auth_api(path: str, dto: BaseModel) -> dict:
     return post_api(f"{AUTH}{path}", data=dto.model_dump())
+
+
+def post_graph_api(path: str, dto: BaseModel) -> dict:
+    return post_api(f"{GRAPH}{path}", params=dto.model_dump())

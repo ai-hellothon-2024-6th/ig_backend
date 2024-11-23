@@ -39,3 +39,8 @@ class CommentSummaryDTO(BaseModel):
 class CommentInsightDTO(BaseModel):
     text: str
     timestamp: str  # UTC+0
+
+
+class ReplyCommentRequestDTO(BaseModel):
+    message: str
+    access_token: str

@@ -27,6 +27,28 @@ def recommend_reply(
         return Response(content=e.response.text, status_code=e.response.status_code)
 
 
+@router.post(
+    "/reply/{comment_id}",
+    status_code=201,
+    response_class=Response,
+    tags=["comment"],
+    responses={
+        403: responses.forbidden,
+    },
+)
+def reply_comment(
+    comment_id: str,
+    dto: ReplyRecommendationDTO,
+    auth: AuthDTO = Depends(jwt.verify_jwt),
+):
+    try:
+        service.reply_comment(comment_id, dto.reply, auth.access_token)
+        return Response(status_code=201)
+
+    except HTTPError as e:
+        return Response(content=e.response.text, status_code=e.response.status_code)
+
+
 @router.get(
     "/{media_id}/positive",
     response_model=List[CommentDTO],

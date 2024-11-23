@@ -11,6 +11,8 @@ import random  # TODO : 테스트용 코드, 추후 삭제
 
 fake = Faker("en_US")
 
+# TODO : 기본, 충성도 분리 필요
+
 
 def system_message(text: str):
     return {
@@ -163,3 +165,12 @@ def get_insights_by_category(category: str, auth: AuthDTO) -> CommentInsightDTO:
         text=summary,
         timestamp=dt_format(datetime.datetime.now()),
     )
+
+
+def reply_comment(comment_id: str, reply: str, access_token: str):
+    comment_api.post_comment_reply(
+        comment_id,
+        reply,
+        access_token,
+    )
+    print("2222")
