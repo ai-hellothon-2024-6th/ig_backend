@@ -53,21 +53,39 @@ def sync_others_comments(media_id: str, auth: AuthDTO):
     # print(len(comments))
     others_comments = filter_my_comments(comments)
     # print(len(others_comments))
-    scores = get_scores_from_comments(others_comments)
-    user_comments = [
-        UserComment(
-            id=comment.id,
-            ig_id=auth.user_id,
-            media_id=media_id,
-            comment_id=comment.id,
-            toxicity=scores[idx].score < 0.7,
-            filtered=(
-                ml_api.get_filterd_text(comment.text) if scores[idx].score < 0.7 else ""
-            ),
-            text=comment.text,
+    # scores = get_scores_from_comments(others_comments)
+    user_comments = []
+    for idx, comment in enumerate(others_comments):
+        toxicity = int(
+            re.match(
+                "\d",
+                openai_api.generate_text(
+                    [
+                        system_message("주어진 인스타 댓글을 분류합니다."),
+                        system_message(
+                            "욕설, 조롱, 비난, 비판, 악담, 저주, 부정적인 내용을 포함한 댓글은 유해(1), 아닌 경우는 유해하지 않음(0)으로 분류합니다."
+                        ),
+                        system_message("결과를 숫자로 나타내주세요."),
+                        user_message(others_comments[idx].text),
+                        system_message("no yapping, 답변만 반환해주세요."),
+                    ]
+                ),
+            ).group()
         )
-        for idx, comment in enumerate(others_comments)
-    ]
+
+        user_comments.append(
+            UserComment(
+                id=comment.id,
+                ig_id=auth.user_id,
+                media_id=media_id,
+                comment_id=comment.id,
+                toxicity=bool(toxicity),
+                filtered=(
+                    ml_api.get_filterd_text(comment.text) if bool(toxicity) else ""
+                ),
+                text=comment.text,
+            )
+        )
     for idx, comment in enumerate(user_comments):
         if comment.toxicity:
             comment.category = 0
