@@ -20,7 +20,7 @@ router = APIRouter()
 )
 def recommend_reply(
     dto: CommentDTO,
-    refresh: bool,
+    refresh: bool = False,
     limit: int = 3,
     auth: AuthDTO = Depends(jwt.verify_jwt),
 ):
