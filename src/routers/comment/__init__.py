@@ -18,7 +18,7 @@ router = APIRouter()
     },
 )
 def recommend_reply(
-    limit: int, dto: CommentDTO, auth: AuthDTO = Depends(jwt.verify_jwt)
+    dto: CommentDTO, limit: int = 3, auth: AuthDTO = Depends(jwt.verify_jwt)
 ):
     try:
         return [service.recommend_reply(dto, auth) for _ in range(limit)]

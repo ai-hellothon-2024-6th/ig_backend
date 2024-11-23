@@ -27,3 +27,13 @@ class CommentDTO(Comment):
 
 class ReplyRecommendationDTO(BaseModel):
     reply: str
+
+
+class CommentSummaryDTO(BaseModel):
+    text: str
+    timestamp: str  # UTC+0
+
+
+class CommentInsightDTO(BaseModel):
+    text: str
+    timestamp: str  # UTC+0

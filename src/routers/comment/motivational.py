@@ -29,7 +29,7 @@ def motivational_comments(auth: AuthDTO = Depends(jwt.verify_jwt)):
 
 @router.get(
     "/summary",
-    # response_model=List[CommentDTO],
+    response_model=CommentSummaryDTO,
     tags=["motivational"],
     responses={
         403: responses.forbidden,
@@ -37,7 +37,10 @@ def motivational_comments(auth: AuthDTO = Depends(jwt.verify_jwt)):
 )
 def motivational_comments_summary(auth: AuthDTO = Depends(jwt.verify_jwt)):
     try:
-        return {}
+        return service.get_summary_by_category(
+            PositiveCommentCategory.MOTIVATIONAL,
+            auth,
+        )
 
     except HTTPError as e:
         return Response(content=e.response.text, status_code=e.response.status_code)
@@ -45,7 +48,7 @@ def motivational_comments_summary(auth: AuthDTO = Depends(jwt.verify_jwt)):
 
 @router.get(
     "/insight",
-    # response_model=List[CommentDTO],
+    # response_model=CommentSummaryDTO,
     tags=["motivational"],
     responses={
         403: responses.forbidden,
@@ -54,6 +57,5 @@ def motivational_comments_summary(auth: AuthDTO = Depends(jwt.verify_jwt)):
 def motivational_comments_insights(auth: AuthDTO = Depends(jwt.verify_jwt)):
     try:
         return {}
-
     except HTTPError as e:
         return Response(content=e.response.text, status_code=e.response.status_code)
