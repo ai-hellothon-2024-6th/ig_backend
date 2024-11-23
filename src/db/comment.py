@@ -7,7 +7,7 @@ class UserComment(SQLModel, table=True):
     id: str = Field(default=None, primary_key=True)
     media_id: str
     ig_id: str
-    text: str = Field(sa_column_kwargs={"length": 2200})
+    text: str = Field(max_length=2200)
     toxicity: bool  # False: positive, True: negative
     category: int = None  # 0: negative, 1: neutral, 2: emotional, 3: motivational
     filtered: str = ""  # 부정적 댓글에만 포함, 긍정적 댓글은 빈 문자열
@@ -22,7 +22,7 @@ class RecommendComment(SQLModel, table=True):
     )
     ig_id: str
     comment_id: str
-    reply: str = Field(sa_column_kwargs={"length": 2200})
+    reply: str = Field(max_length=2200)
 
 
 SQLModel.metadata.create_all(engine)
