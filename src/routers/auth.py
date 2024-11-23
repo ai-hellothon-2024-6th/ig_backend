@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Response, Depends
 from src.models.auth import LoginDTO, TokenDTO, AuthDTO
-from src.api.instagram import auth as auth_api
+from src.services.auth import get_auth_dto
 from src.utils import jwt, responses
 from requests.exceptions import HTTPError
 
@@ -19,10 +19,9 @@ router = APIRouter()
 )
 def login(dto: LoginDTO):
     try:
-        response = auth_api.get_access_token(dto)
-        # access_token은 차후 장기 토큰으로 변환 후 db에 저장할 예정
+        response = get_auth_dto(dto)
         jwt_token = jwt.create_jwt_token(
-            {"user_id": response.user_id, "access_token": response.access_token},
+            {"user_id": response.user_id},
             dto.expires_seconds,
         )
         return {"token": jwt_token}

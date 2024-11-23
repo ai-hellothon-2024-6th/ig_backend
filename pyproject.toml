@@ -8,6 +8,7 @@ dependencies = [
     "faker>=33.0.0",
     "fastapi>=0.115.5",
     "pydantic-settings>=2.6.1",
+    "pymysql>=1.1.1",
     "python-jose>=3.3.0",
     "requests>=2.32.3",
     "sqlmodel>=0.0.22",
