@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Response, Depends
 from src.models.info import InfoDTO, ProfileInfoDTO
 from src.models.auth import AuthDTO
-from src.api.instagram import info as info_api
+from src.services import info as info_service
 from src.utils import jwt, responses
 from requests.exceptions import HTTPError
 
@@ -20,7 +20,7 @@ router = APIRouter()
 )
 def profile_info(auth: AuthDTO = Depends(jwt.verify_jwt)):
     try:
-        return info_api.get_profile_info(auth)
+        return info_service.get_profile_info(auth)
     except HTTPError as e:
         return Response(
             content=e.response.text,
@@ -38,7 +38,7 @@ def profile_info(auth: AuthDTO = Depends(jwt.verify_jwt)):
 )
 def info(auth: AuthDTO = Depends(jwt.verify_jwt)):
     try:
-        return info_api.get_info(auth)
+        return info_service.get_info(auth)
     except HTTPError as e:
         return Response(
             content=e.response.text,

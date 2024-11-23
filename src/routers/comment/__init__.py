@@ -1,10 +1,11 @@
+from typing import List
 from fastapi import APIRouter, Response, Depends
+from requests.exceptions import HTTPError
 from src.models.auth import AuthDTO
 from src.models.comment import *
-from src.services import comment as service
+from src.services import comment as comment_service
+from src.services.comment import reply as reply_service
 from src.utils import jwt, responses
-from requests.exceptions import HTTPError
-from typing import List
 
 router = APIRouter()
 
@@ -21,7 +22,19 @@ def recommend_reply(
     dto: CommentDTO, limit: int = 3, auth: AuthDTO = Depends(jwt.verify_jwt)
 ):
     try:
-        return [service.recommend_reply(dto, auth) for _ in range(limit)]
+        saved_recommend_reply = comment_service.get_recommend_reply(dto, auth)
+        print(saved_recommend_reply)
+        if len(saved_recommend_reply) > limit:
+            return [
+                ReplyRecommendationDTO(id=f"{r.id}", reply=r.reply)
+                for r in saved_recommend_reply[:limit]
+            ]
+        for _ in range(limit):
+            reply_service.recommend_reply(dto, auth)
+        return [
+            ReplyRecommendationDTO(id=f"{r.id}", reply=r.reply)
+            for r in comment_service.get_recommend_reply(dto, auth)
+        ]
 
     except HTTPError as e:
         return Response(content=e.response.text, status_code=e.response.status_code)
@@ -41,7 +54,7 @@ def update_recommend_reply(
     auth: AuthDTO = Depends(jwt.verify_jwt),
 ):
     try:
-        service.update_recommend_reply(dto, auth)
+        comment_service.update_recommend_reply(dto, auth)
         return Response(status_code=204)
 
     except HTTPError as e:
@@ -63,11 +76,14 @@ def reply_comment(
     auth: AuthDTO = Depends(jwt.verify_jwt),
 ):
     try:
-        service.reply_comment(comment_id, dto.reply, auth.access_token)
+        comment_service.reply_comment(comment_id, dto.reply, auth.access_token)
         return Response(status_code=201)
 
     except HTTPError as e:
-        return Response(content=e.response.text, status_code=e.response.status_code)
+        return Response(
+            content=e.response.text,
+            status_code=e.response.status_code,
+        )
 
 
 @router.get(
@@ -80,11 +96,14 @@ def reply_comment(
 )
 def positive_comments(media_id: str, auth: AuthDTO = Depends(jwt.verify_jwt)):
     try:
-        other_user_comments, scores = service.get_comments_and_scores(media_id, auth)
-        return service.filter_by_score(other_user_comments, scores, lambda x: x >= 0.7)
+        comment_service.sync_others_comments(media_id, auth)
+        return comment_service.get_others_comment_by_toxicity(media_id, auth, False)
 
     except HTTPError as e:
-        return Response(content=e.response.text, status_code=e.response.status_code)
+        return Response(
+            content=e.response.text,
+            status_code=e.response.status_code,
+        )
 
 
 @router.get(
@@ -97,11 +116,8 @@ def positive_comments(media_id: str, auth: AuthDTO = Depends(jwt.verify_jwt)):
 )
 def negative_comments(media_id: str, auth: AuthDTO = Depends(jwt.verify_jwt)):
     try:
-        other_user_comments, scores = service.get_comments_and_scores(media_id, auth)
-        filtered_comments = service.filter_by_score(
-            other_user_comments, scores, lambda x: x < 0.7, toxicity=True
-        )
-        return service.update_filtered_text(filtered_comments)
+        comment_service.sync_others_comments(media_id, auth)
+        return comment_service.get_others_comment_by_toxicity(media_id, auth, True)
 
     except HTTPError as e:
         return Response(content=e.response.text, status_code=e.response.status_code)

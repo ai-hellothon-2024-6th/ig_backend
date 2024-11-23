@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     DB_NAME: str  # 데이터베이스 이름
     DB_USER: str  # 사용자 이름
     DB_PASSWORD: str  # 비밀번호
+    OPENAI_API_KEY: str
 
     class Config:
         env_file = ".env"

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Response, Depends
 from src.models.media import MediaDTO
 from src.models.auth import AuthDTO
-from src.api.instagram import media as media_api
+from src.services import media as media_service
 from src.utils import jwt, responses
 from requests.exceptions import HTTPError
 from typing import List
@@ -21,7 +21,7 @@ router = APIRouter()
 )
 def media_list(auth: AuthDTO = Depends(jwt.verify_jwt)):
     try:
-        return media_api.get_media_list(auth)
+        return media_service.get_media_list(auth)
     except HTTPError as e:
         return Response(
             content=e.response.text,
@@ -42,7 +42,7 @@ def media_detail(
     auth: AuthDTO = Depends(jwt.verify_jwt),
 ):
     try:
-        return media_api.get_media_detail(media_id, auth.access_token)
+        return media_service.get_media_detail(media_id, auth)
     except HTTPError as e:
         return Response(
             content=e.response.text,

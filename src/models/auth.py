@@ -18,7 +18,7 @@ class ShortTokenRequestDTO(BaseModel):
 
 
 class AuthDTO(BaseModel):
-    access_token: str
+    access_token: str = ""
     user_id: str
 
 

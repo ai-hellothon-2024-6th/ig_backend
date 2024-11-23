@@ -4,7 +4,7 @@ from src.models.common import RequestWithFieldsDTO, OnlyAccessTokenDTO
 from src.utils.tools import fields
 
 
-def get_comments(media_id: str, access_token: str):
+def get_comments(media_id: str, access_token: str) -> list[str]:
     api_response = get_graph_api(
         f"/{media_id}/comments",
         OnlyAccessTokenDTO(access_token=access_token),

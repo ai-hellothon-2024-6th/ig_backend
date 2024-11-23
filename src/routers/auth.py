@@ -4,7 +4,6 @@ from src.services import auth as auth_service
 from src.utils import jwt, responses
 from requests.exceptions import HTTPError
 
-# TODO : API와 DB 접점을 Service로 분리 (auth)
 
 router = APIRouter()
 
@@ -20,6 +19,7 @@ router = APIRouter()
 def login(dto: LoginDTO):
     try:
         response = auth_service.get_auth_dto(dto)
+        auth_service.sync_user_data(response.user_id)
         jwt_token = jwt.create_jwt_token(
             {"user_id": response.user_id},
             dto.expires_seconds,

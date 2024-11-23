@@ -10,6 +10,9 @@ class AuthTokens(SQLModel, table=True):
     valid_until: str
 
 
+SQLModel.metadata.create_all(engine)
+
+
 def delete_auth_token(ig_id: str):
     with Session(engine) as session:
         auth_token = session.exec(
@@ -33,7 +36,7 @@ def save_auth_token(ig_id: str, token: str, valid_until: str):
         session.commit()
 
 
-def find_auth_token(ig_id: str):
+def find_auth_token_valid(ig_id: str):
     with Session(engine) as session:
         statement = select(AuthTokens).where(
             and_(
@@ -42,6 +45,3 @@ def find_auth_token(ig_id: str):
             )
         )
         return session.exec(statement).first()
-
-
-SQLModel.metadata.create_all(engine)
