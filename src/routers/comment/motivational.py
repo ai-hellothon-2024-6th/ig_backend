@@ -48,14 +48,23 @@ def motivational_comments_summary(auth: AuthDTO = Depends(jwt.verify_jwt)):
 
 @router.get(
     "/insight",
-    # response_model=CommentSummaryDTO,
+    response_model=List[CommentInsightDTO],
     tags=["motivational"],
     responses={
         403: responses.forbidden,
     },
 )
-def motivational_comments_insights(auth: AuthDTO = Depends(jwt.verify_jwt)):
+def motivational_comments_insights(
+    limit: int = 3,
+    auth: AuthDTO = Depends(jwt.verify_jwt),
+):
     try:
-        return {}
+        return [
+            service.get_insights_by_category(
+                PositiveCommentCategory.MOTIVATIONAL,
+                auth,
+            )
+            for _ in range(limit)
+        ]
     except HTTPError as e:
         return Response(content=e.response.text, status_code=e.response.status_code)

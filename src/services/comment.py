@@ -141,9 +141,9 @@ def get_summary_by_category(category: str, auth: AuthDTO) -> CommentSummaryDTO:
 def get_insights_by_category(category: str, auth: AuthDTO) -> CommentInsightDTO:
     prompt = ""
     if category == PositiveCommentCategory.EMOTIONAL:
-        prompt += "Interest, Search 형태로 나오는 댓글, 즉 나의 콘텐츠나 상품에 대해 질문하는 사람들의 댓글을 줄글로 자연스럽게 작성합니다."
+        prompt += "Interest, Search 형태의 관심사, 즉 나의 콘텐츠나 상품에 대해 질문하는 사람들에 대한 인사이트를 제안합니다."
     if category == PositiveCommentCategory.MOTIVATIONAL:
-        prompt += "Action Share 형태로 나오는 댓글 즉 사용 경험 설명, 제품 설명, 콘텐츠를 지속적으로 소비한다고 밝힌 사람에 대한 댓글을 줄글로 자연스럽게 작성합니다."
+        prompt += "Action Share 형태의 관심사, 즉 사용 경험 설명, 제품 설명, 콘텐츠를 지속적으로 소비한다고 밝힌 사람에 대한 인사이트를 제안합니다."
     summary = ml_api.get_generative_text(
         [
             system_message(
