@@ -20,6 +20,10 @@ class FilteredTextResponseDTO(BaseModel):
     output: str
 
 
+class OutputDTO(BaseModel):
+    output: str
+
+
 class GenerativeTextRequestDTO(BaseModel):
     model: str = "helpy-pro"
     sess_id: str  # UUIDv4

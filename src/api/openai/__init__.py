@@ -1,16 +1,15 @@
 from openai import OpenAI
-from src.models.alice_ml import FilteredTextResponseDTO
+from src.models.alice_ml import OutputDTO
 
 client = OpenAI()
 
 
 def generate_text(messages: list[dict]):
     return (
-        client.beta.chat.completions.parse(
+        client.chat.completions.create(
             model="gpt-4o-mini",
             messages=messages,
-            response_format=FilteredTextResponseDTO,
         )
         .choices[0]
-        .message.parsed
+        .message.content
     )

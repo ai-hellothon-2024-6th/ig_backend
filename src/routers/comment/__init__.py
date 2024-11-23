@@ -23,7 +23,6 @@ def recommend_reply(
 ):
     try:
         saved_recommend_reply = comment_service.get_recommend_reply(dto, auth)
-        print(saved_recommend_reply)
         if len(saved_recommend_reply) > limit:
             return [
                 RecommendComment(
@@ -35,7 +34,7 @@ def recommend_reply(
             reply_service.recommend_reply(dto, auth)
         return [
             RecommendComment(
-                id=f"{r.id}", reply=r.reply, ig_id=r.ig_id, comment_id=r.comment_id
+                id=r.id, reply=r.reply, ig_id=r.ig_id, comment_id=r.comment_id
             )
             for r in comment_service.get_recommend_reply(dto, auth)
         ]
@@ -80,7 +79,7 @@ def reply_comment(
     auth: AuthDTO = Depends(jwt.verify_jwt),
 ):
     try:
-        comment_service.reply_comment(comment_id, dto.reply, auth.access_token)
+        reply_service.post_reply_comment(comment_id, dto.reply, auth.user_id)
         return Response(status_code=201)
 
     except HTTPError as e:

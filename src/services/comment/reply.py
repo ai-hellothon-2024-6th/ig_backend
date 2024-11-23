@@ -7,6 +7,7 @@ from src.services.comment import system_message, user_message
 from src.db import media as media_db
 from src.db import comment as comment_db
 from src.db.comment import RecommendComment
+from src.db import auth as auth_db
 
 
 def recommend_reply(dto: CommentDTO, auth: AuthDTO):
@@ -35,7 +36,8 @@ def recommend_reply(dto: CommentDTO, auth: AuthDTO):
     comment_db.save_recommend_comment(dto)
 
 
-def reply_comment(comment_id: str, reply: str, access_token: str):
+def post_reply_comment(comment_id: str, reply: str, user_id: str):
+    access_token = auth_db.find_auth_token_valid(user_id).token
     comment_api.post_comment_reply(
         comment_id,
         reply,

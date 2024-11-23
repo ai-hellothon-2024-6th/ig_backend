@@ -32,8 +32,5 @@ def get_comment_detail(comment_id: str, access_token: str):
 def post_comment_reply(comment_id: str, reply: str, access_token: str):
     return post_graph_api(
         f"/{comment_id}/replies",
-        ReplyCommentRequestDTO(
-            message=reply,
-            access_token=access_token,
-        ),
+        ReplyCommentRequestDTO(message=reply, access_token=access_token),
     )
