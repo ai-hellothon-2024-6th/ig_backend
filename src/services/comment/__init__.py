@@ -63,7 +63,9 @@ def sync_others_comments(media_id: str, auth: AuthDTO):
                     [
                         system_message("주어진 인스타 댓글을 분류합니다."),
                         system_message(
-                            "욕설, 조롱, 비난, 비판, 악담, 저주, 부정적인 내용을 포함한 댓글은 유해(1), 아닌 경우는 유해하지 않음(0)으로 분류합니다."
+                            "욕설, 조롱, 비난, 비판, 악담, 저주, 부정적인 내용,\
+                                공격성, 상업성 지적, 수동적 공격성, 비꼬기 등을 포함한 댓글은 유해(1),\
+                                아닌 경우는 유해하지 않음(0)으로 분류합니다."
                         ),
                         system_message("결과를 숫자로 나타내주세요."),
                         user_message(others_comments[idx].text),
