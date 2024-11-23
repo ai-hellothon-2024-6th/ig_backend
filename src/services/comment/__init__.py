@@ -88,7 +88,7 @@ def sync_others_comments(media_id: str, auth: AuthDTO):
                         user_message(others_comments[idx].text),
                         system_message("no yapping, 답변만 반환해주세요."),
                     ]
-                ).output,
+                ),
             ).group()
         )
     comment_db.save_user_comments(user_comments)
