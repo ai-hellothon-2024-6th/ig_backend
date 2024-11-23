@@ -40,7 +40,7 @@ def recommend_reply(
                 id=r.id, reply=r.reply, ig_id=r.ig_id, comment_id=r.comment_id
             )
             for r in comment_service.get_recommend_reply(dto, auth)
-        ][:limit]
+        ][-limit:]
 
     except HTTPError as e:
         return Response(content=e.response.text, status_code=e.response.status_code)
